@@ -81,7 +81,7 @@ void setup() {
   bDown.setDebounceTime(50); // set debounce time to 50 milliseconds    
   bBack.setDebounceTime(50); // set debounce time to 50 milliseconds    
    
-  lcd.init();
+  //lcd.init();
   lcd.begin(16,2); // Initializes and clears the LCD screen
   lcd.clear();
   pinMode(lcdBackLight, OUTPUT);
@@ -628,29 +628,37 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
   if ((bUp.isReleased()||bDown.isReleased()) && setMinute == 2){
     if (paraMatrix[localPageCounter][localSubPageCounter+2] == 0){// if PM
       paraMatrix[localPageCounter][localSubPageCounter+2] =  1;// Set to AM
+      writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
       if(paraMatrix[localPageCounter][localSubPageCounter]>12 && paraMatrix[localPageCounter][localSubPageCounter]<=23){
         paraMatrix[localPageCounter][localSubPageCounter]= paraMatrix[localPageCounter][localSubPageCounter]-12;
+        writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####
       }
       else if(paraMatrix[localPageCounter][localSubPageCounter]==12){
         paraMatrix[localPageCounter][localSubPageCounter] = 0;
+        writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####
       }
       else{
         //paraMatrix[localPageCounter][localSubPageCounter]= localHour;
         paraMatrix[localPageCounter][localSubPageCounter+2]= 1;
+        writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
       }      
       Serial.println("AM "+ String(paraMatrix[localPageCounter][localSubPageCounter+2])+" "+String(paraMatrix[localPageCounter][localSubPageCounter]));// AM/PM of the clock is the paramatrix[..][2]
       
     }
     else{
       paraMatrix[localPageCounter][localSubPageCounter+2] = 0;//PM
+      writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
       if(paraMatrix[localPageCounter][localSubPageCounter]<12 && paraMatrix[localPageCounter][localSubPageCounter]>0){
         paraMatrix[localPageCounter][localSubPageCounter]= paraMatrix[localPageCounter][localSubPageCounter] + 12;
+        writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####
       }
       else if(paraMatrix[localPageCounter][localSubPageCounter] == 0){
-         paraMatrix[localPageCounter][localSubPageCounter]= 12;  
+         paraMatrix[localPageCounter][localSubPageCounter]= 12;
+         writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####
       }
       else{
          paraMatrix[localPageCounter][localSubPageCounter+2]= 0;
+         writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
       }
       Serial.println("PM "+ String(paraMatrix[localPageCounter][localSubPageCounter+2])+" "+String(paraMatrix[localPageCounter][localSubPageCounter]));// AM/PM of the clock is the paramatrix[..][2]
     }
@@ -669,7 +677,8 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
        localHour = 12;
       }
       Serial.println("Hour: "+ String(localHour));
-      paraMatrix[localPageCounter][localSubPageCounter]= localHour;    
+      paraMatrix[localPageCounter][localSubPageCounter]= localHour;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //#### 
       subMenuDisplay(localPageCounter, localSubPageCounter,1);
       lcd.setCursor(1,1);
     }
@@ -682,7 +691,8 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
         localHour = 23;
         }
       Serial.println("Hour: "+ String(localHour));
-      paraMatrix[localPageCounter][localSubPageCounter]= localHour;    
+      paraMatrix[localPageCounter][localSubPageCounter]= localHour;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####   
       subMenuDisplay(localPageCounter, localSubPageCounter,1);
       lcd.setCursor(1,1); 
     }
@@ -697,7 +707,8 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
        localHour = 1;
       }
       Serial.println("Hour: "+ String(localHour));
-      paraMatrix[localPageCounter][localSubPageCounter]= localHour;    
+      paraMatrix[localPageCounter][localSubPageCounter]= localHour;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####     
       subMenuDisplay(localPageCounter, localSubPageCounter,1);
       lcd.setCursor(1,1);
     }
@@ -710,7 +721,8 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
         localHour = 12;
         }
       Serial.println("Hour: "+ String(localHour));
-      paraMatrix[localPageCounter][localSubPageCounter]= localHour;    
+      paraMatrix[localPageCounter][localSubPageCounter]= localHour;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter,paraMatrix[localPageCounter][localSubPageCounter]);  //####     
       subMenuDisplay(localPageCounter, localSubPageCounter,1);
       lcd.setCursor(1,1); 
     }
@@ -726,6 +738,7 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
       }
    Serial.println("Minute: "+ String(localMinute));
    paraMatrix[localPageCounter][localSubPageCounter+1]= localMinute; // Minutes of the clock is the paramatrix[..][1]
+   writeElementToEEPROM(localPageCounter,localSubPageCounter+1,paraMatrix[localPageCounter][localSubPageCounter+1]);  //#### 
    subMenuDisplay(localPageCounter, localSubPageCounter,1);
    lcd.setCursor(5,1);
   }
@@ -738,6 +751,7 @@ void setStartTime(int localPageCounter, int localSubPageCounter){
       }
    Serial.println("Minute "+ String(localMinute));
    paraMatrix[localPageCounter][localSubPageCounter+1]= localMinute;// Minutes of the clock is the paramatrix[..][1]
+   writeElementToEEPROM(localPageCounter,localSubPageCounter+1,paraMatrix[localPageCounter][localSubPageCounter+1]);  //#### 
    subMenuDisplay(localPageCounter, localSubPageCounter,1);
    lcd.setCursor(5,1);
   }       
@@ -756,6 +770,7 @@ void setTimeDuration(int localPageCounter, int localSubPageCounter){
     }
     Serial.println("Hour: "+ String(localTimeDuration));
     paraMatrix[localPageCounter][localSubPageCounter+2]= localTimeDuration;
+    writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //#### 
     subMenuDisplay(localPageCounter, localSubPageCounter,1);
     lcd.setCursor(1,1);
   }
@@ -768,6 +783,7 @@ void setTimeDuration(int localPageCounter, int localSubPageCounter){
       }
     Serial.println("Duration hour: "+ String(localTimeDuration));
     paraMatrix[localPageCounter][localSubPageCounter+2]= localTimeDuration;
+    writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
     subMenuDisplay(localPageCounter, localSubPageCounter,1);
     lcd.setCursor(1,1); 
   }
@@ -777,13 +793,16 @@ void setTimeDuration(int localPageCounter, int localSubPageCounter){
 void enableDisable(int localPageCounter, int localSubPageCounter){
   if ((bUp.isReleased()||bDown.isReleased())){
     if (paraMatrix[localPageCounter][localSubPageCounter+2] == 0){ // Add 2 to address the specific Paramatrix parameter corresponding to Enable/Disable
-      paraMatrix[localPageCounter][localSubPageCounter+2] = 1;  
+      paraMatrix[localPageCounter][localSubPageCounter+2] = 1;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####  
     }
     else{
       paraMatrix[localPageCounter][localSubPageCounter+2] = 0;
+      writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
       }  
   Serial.print("Auto:" + String(paraMatrix[localPageCounter][localSubPageCounter+2]));
   subMenuDisplay(localPageCounter, localSubPageCounter,1);
+  writeElementToEEPROM(localPageCounter,localSubPageCounter+2,paraMatrix[localPageCounter][localSubPageCounter+2]);  //####
   }
 }
 
